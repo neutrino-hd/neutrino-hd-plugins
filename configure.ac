@@ -60,6 +60,7 @@ include/Makefile
 msgbox/Makefile
 input/Makefile
 tuxmail/Makefile
+tuxcom/Makefile
 shellexec/Makefile
 cooliTSclimax/Makefile
 tuxbox-plugins.pc
