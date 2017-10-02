@@ -1,0 +1,11 @@
+#define BNR0		0
+#define BLACK		1
+#define	WHITE		2
+#define	RED		3
+#define	YELLOW		4
+#define	GREEN		5
+#define	STEELBLUE	6
+#define	BLUE		7
+#define	GRAY		8
+#define	DARK		9
+#define	RESERVED	254
