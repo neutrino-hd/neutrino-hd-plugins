@@ -1,5 +1,0 @@
-#!/bin/sh
-
-clock -ss &
-
-exit 0

@@ -624,7 +624,7 @@ install-exec-local:
 	install -d $(DESTDIR)$(CONFIGDIR)
 	install -d $(DESTDIR)$(CONFIGDIR)/tuxcom
 	install -m 0755 tuxcom $(DESTDIR)$(PLUGINDIR)/tuxcom.so
-	install -m 0644 $(srcdir)/tuxcom.cfg $(DESTDIR)$(PLUGINDIR)
+	install -m 0644 $(srcdir)/tuxcom.cfg $(CONFIGDIR)/tuxcom
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.

@@ -17,4 +17,4 @@ install-exec-local:
 	install -d $(DESTDIR)$(CONFIGDIR)
 	install -d $(DESTDIR)$(CONFIGDIR)/tuxcom
 	install -m 0755 tuxcom $(DESTDIR)$(PLUGINDIR)/tuxcom.so
-	install -m 0644 $(srcdir)/tuxcom.cfg $(CONFIGDIR)/tuxcom
+	install -m 0644 $(srcdir)/tuxcom.cfg $(PLUGINDIR)
