@@ -168,7 +168,12 @@ extern uint32_t *lfb, *lbb;
 extern int FSIZE_BIG;
 extern int FSIZE_MED;
 extern int FSIZE_SMALL;
+
 extern int TABULATOR;
+
+extern int OFFSET_MED;
+extern int OFFSET_SMALL;
+extern int OFFSET_MIN;
 
 struct fb_fix_screeninfo fix_screeninfo;
 struct fb_var_screeninfo var_screeninfo;
@@ -180,12 +185,9 @@ extern int instance;
 int get_instance(void);
 void put_instance(int pval);
 
-#ifndef FB_DEVICE || defined HAVE_ARM_HARDWARE
-#define FB_DEVICE	"/dev/fb"
-#elif !defined FB_DEVICE || defined HAVE_COOL_HARDWARE
-#define FB_DEVICE	"/dev/fb/0"
+#ifndef FB_DEVICE
+#define FB_DEVICE	"/dev/fb0"
 #endif
-
 
 int key_count;
 unsigned short lastkey;

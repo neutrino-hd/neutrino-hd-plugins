@@ -137,6 +137,16 @@ extern uint32_t *lfb, *lbb, *obb;
 extern uint32_t bgra[];
 extern int stride;
 
+extern int FSIZE_BIG;
+extern int FSIZE_MED;
+extern int FSIZE_SMALL;
+
+extern int TABULATOR;
+
+extern int OFFSET_MED;
+extern int OFFSET_SMALL;
+extern int OFFSET_MIN;
+
 struct fb_fix_screeninfo fix_screeninfo;
 struct fb_var_screeninfo var_screeninfo;
 
@@ -146,10 +156,8 @@ extern char *butmsg[3];
 extern int buttons,selection;
 extern const char sc[8], tc[8];
 
-#ifndef FB_DEVICE || defined HAVE_ARM_HARDWARE
-#define FB_DEVICE	"/dev/fb"
-#elif !defined FB_DEVICE || defined HAVE_COOL_HARDWARE
-#define FB_DEVICE	"/dev/fb/0"
+#ifndef FB_DEVICE
+#define FB_DEVICE	"/dev/fb0"
 #endif
 
 #endif

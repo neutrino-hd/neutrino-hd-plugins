@@ -161,10 +161,9 @@ extern int instance;
 int get_instance(void);
 void put_instance(int pval);
 
-#ifndef FB_DEVICE || defined HAVE_ARM_HARDWARE
-#define FB_DEVICE	"/dev/fb"
-#elif !defined FB_DEVICE || defined HAVE_COOL_HARDWARE
-#define FB_DEVICE	"/dev/fb/0"
+#ifndef FB_DEVICE
+#define FB_DEVICE	"/dev/fb0"
 #endif
 
 #endif
+

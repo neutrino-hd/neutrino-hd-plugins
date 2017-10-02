@@ -1,11 +1,7 @@
 #ifndef __IO_H__
 #define __IO_H__
 
-#if defined HAVE_ARM_HARDWARE || !defined RC_DEVICE
-#define RC_DEVICE "/dev/input/event1"
-#elif definded HAVE_COOL_HARDWARE || !defined RC_DEVICE
-#define RC_DEVICE "/dev/input/nevis_ir"
-#endif
+#define RC_DEVICE	"/dev/input/event1"
 
 int InitRC(void);
 int CloseRC(void);

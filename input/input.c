@@ -12,7 +12,7 @@
 
 #define NCF_FILE 	"/var/tuxbox/config/neutrino.conf"
 #define BUFSIZE 	1024
-#define I_VERSION	2.0
+#define I_VERSION	2.10
 
 
 char FONT[128]="/share/fonts/neutrino.ttf";
@@ -51,7 +51,7 @@ static char menucoltxt[][25]={
 	"Head_Text",
 	"Head"
 };
-static char spres[][5]={"", "_crt", "_lcd"};
+static char spres[][4]={"", "crt", "lcd"};
 
 char *line_buffer=NULL;
 
@@ -130,6 +130,14 @@ int rv=-1;
 		fclose(nfh);
 	}
 	return rv;
+}
+
+int scale2res(int s)
+{
+	if (var_screeninfo.xres == 1920)
+		s += s/2;
+
+	return s;
 }
 
 void TrimString(char *strg)
@@ -221,7 +229,7 @@ void ShowUsage(void)
 
 int main (int argc, char **argv)
 {
-int tv,cols=25,tmo=0,ix, spr;
+int tv,cols=25,tmo=0,ix, spr, resolution;
 const char ttl[]="Eingabe";
 int dloop=1,keys=0,frame=1,mask=0,bhelp=0;
 char rstr[512]={0}, *title=NULL, *format=NULL, *defstr=NULL, *aptr=NULL, *rptr=NULL;
@@ -232,6 +240,31 @@ char rstr[512]={0}, *title=NULL, *format=NULL, *defstr=NULL, *aptr=NULL, *rptr=N
 			return 0;
 		}
 
+		//init framebuffer before 1st scale2res
+		fb = open(FB_DEVICE, O_RDWR);
+		if(fb == -1)
+		{
+			perror(__plugin__ " <open framebuffer device>");
+			exit(1);
+		}
+		if(ioctl(fb, FBIOGET_FSCREENINFO, &fix_screeninfo) == -1)
+		{
+			perror(__plugin__ " <FBIOGET_FSCREENINFO>\n");
+			return -1;
+		}
+		if(ioctl(fb, FBIOGET_VSCREENINFO, &var_screeninfo) == -1)
+		{
+			perror(__plugin__ " <FBIOGET_VSCREENINFO>\n");
+			return -1;
+		}
+
+		if(!(lfb = (uint32_t*)mmap(0, fix_screeninfo.smem_len, PROT_READ | PROT_WRITE, MAP_SHARED, fb, 0)))
+		{
+			perror(__plugin__ " <mapping of Framebuffer>\n");
+			return -1;
+		}
+
+		// read arguments
 		dloop=0;
 		for(tv=1; !dloop && tv<argc; tv++)
 		{
@@ -356,21 +389,35 @@ char rstr[512]={0}, *title=NULL, *format=NULL, *defstr=NULL, *aptr=NULL, *rptr=N
 		}
 
 		spr=Read_Neutrino_Cfg("screen_preset")+1;
-		sprintf(line_buffer,"screen_StartX%s",spres[spr]);
+		resolution=Read_Neutrino_Cfg("osd_resolution");
+
+		if (resolution == -1)
+			sprintf(line_buffer,"screen_StartX_%s", spres[spr]);
+		else
+			sprintf(line_buffer,"screen_StartX_%s_%d", spres[spr], resolution);
 		if((sx=Read_Neutrino_Cfg(line_buffer))<0)
-			sx=100;
+			sx=scale2res(100);
 
-		sprintf(line_buffer,"screen_EndX%s",spres[spr]);
+		if (resolution == -1)
+			sprintf(line_buffer,"screen_EndX_%s", spres[spr]);
+		else
+			sprintf(line_buffer,"screen_EndX_%s_%d", spres[spr], resolution);
 		if((ex=Read_Neutrino_Cfg(line_buffer))<0)
-			ex=1180;
+			ex=scale2res(1180);
 
-		sprintf(line_buffer,"screen_StartY%s",spres[spr]);
+		if (resolution == -1)
+			sprintf(line_buffer,"screen_StartY_%s", spres[spr]);
+		else
+			sprintf(line_buffer,"screen_StartY_%s_%d", spres[spr], resolution);
 		if((sy=Read_Neutrino_Cfg(line_buffer))<0)
-			sy=100;
+			sy=scale2res(100);
 
-		sprintf(line_buffer,"screen_EndY%s",spres[spr]);
+		if (resolution == -1)
+			sprintf(line_buffer,"screen_EndY_%s", spres[spr]);
+		else
+			sprintf(line_buffer,"screen_EndY_%s_%d", spres[spr], resolution);
 		if((ey=Read_Neutrino_Cfg(line_buffer))<0)
-			ey=620;
+			ey=scale2res(620);
 
 		for(ix=CMCST; ix<=CMH; ix++)
 		{
@@ -421,16 +468,9 @@ char rstr[512]={0}, *title=NULL, *format=NULL, *defstr=NULL, *aptr=NULL, *rptr=N
 			bgra[ix] = (tr[ix] << 24) | (rd[ix] << 16) | (gn[ix] << 8) | bl[ix];
 
 		if(Read_Neutrino_Cfg("rounded_corners")>0)
-			radius=11;
+			radius=scale2res(11);
 		else
 			radius = 0;
-
-		fb = open(FB_DEVICE, O_RDWR);
-		if(fb == -1)
-		{
-			perror(__plugin__ " <open framebuffer device>");
-			exit(1);
-		}
 
 		InitRC();
 
@@ -440,24 +480,6 @@ char rstr[512]={0}, *title=NULL, *format=NULL, *defstr=NULL, *aptr=NULL, *rptr=N
 			return -1;
 		}
 
-	//init framebuffer
-
-		if(ioctl(fb, FBIOGET_FSCREENINFO, &fix_screeninfo) == -1)
-		{
-			perror(__plugin__ " <FBIOGET_FSCREENINFO>\n");
-			return -1;
-		}
-		if(ioctl(fb, FBIOGET_VSCREENINFO, &var_screeninfo) == -1)
-		{
-			perror(__plugin__ " <FBIOGET_VSCREENINFO>\n");
-			return -1;
-		}
-
-		if(!(lfb = (uint32_t*)mmap(0, fix_screeninfo.smem_len, PROT_READ | PROT_WRITE, MAP_SHARED, fb, 0)))
-		{
-			perror(__plugin__ " <mapping of Framebuffer>\n");
-			return -1;
-		}
 
 	//init fontlibrary
 
@@ -533,6 +555,18 @@ char rstr[512]={0}, *title=NULL, *format=NULL, *defstr=NULL, *aptr=NULL, *rptr=N
 		startx = sx;
 		starty = sy;
 
+	/* scale to resolution */
+	FSIZE_BIG = scale2res(FSIZE_BIG);
+	FSIZE_MED = scale2res(FSIZE_MED);
+	FSIZE_SMALL = scale2res(FSIZE_SMALL);
+
+	TABULATOR = scale2res(TABULATOR);
+
+	OFFSET_MED = scale2res(OFFSET_MED);
+	OFFSET_SMALL = scale2res(OFFSET_SMALL);
+	OFFSET_MIN = scale2res(OFFSET_MIN);
+
+	/* Set up signal handlers. */
 	signal(SIGINT, quit_signal);
 	signal(SIGQUIT, quit_signal);
 	signal(SIGTERM, quit_signal);
