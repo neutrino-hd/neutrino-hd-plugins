@@ -63,5 +63,6 @@ tuxmail/Makefile
 tuxcom/Makefile
 shellexec/Makefile
 cooliTSclimax/Makefile
+tuxwetter/Makefile
 tuxbox-plugins.pc
 ])
