@@ -5,10 +5,10 @@
 
 void read_neutrino_osd_conf ( int *ex,int *sx,int *ey, int *sy, int *preset)
 {
-	const char *filename="/var/tuxbox/config/neutrino.conf";
-	const char spres[][5]={"","_crt","_lcd"};
+	const char *filename="/etc/neutrino/config/neutrino.conf";
+	const char spres[][4]={"","crt","lcd"};
 	char sstr[4][32];
-	int pres=-1, loop, *sptr[5]={ex, sx, ey, sy, preset};
+	int pres=-1, resolution=-1, loop, *sptr[5]={ex, sx, ey, sy, preset};
 	char *buffer;
 	size_t len;
 	ssize_t read;
@@ -20,16 +20,27 @@ void read_neutrino_osd_conf ( int *ex,int *sx,int *ey, int *sy, int *preset)
 		len = 0;
 		while ((read = getline(&buffer, &len, fd)) != -1){
 			sscanf(buffer, "screen_preset=%d", &pres);
+			sscanf(buffer, "osd_resolution=%d", &resolution);
 			*preset = pres;
 		}
 		if(buffer)
 			free(buffer);
 		rewind(fd);
 		++pres;
-		sprintf(sstr[0], "screen_EndX%s=%%d", spres[pres]);
-		sprintf(sstr[1], "screen_StartX%s=%%d", spres[pres]);
-		sprintf(sstr[2], "screen_EndY%s=%%d", spres[pres]);
-		sprintf(sstr[3], "screen_StartY%s=%%d", spres[pres]);
+		if (resolution == -1)
+		{
+			sprintf(sstr[0], "screen_EndX_%s=%%d", spres[pres]);
+			sprintf(sstr[1], "screen_StartX_%s=%%d", spres[pres]);
+			sprintf(sstr[2], "screen_EndY_%s=%%d", spres[pres]);
+			sprintf(sstr[3], "screen_StartY_%s=%%d", spres[pres]);
+		}
+		else
+		{
+			sprintf(sstr[0], "screen_EndX_%s_%d=%%d", spres[pres], resolution);
+			sprintf(sstr[1], "screen_StartX_%s_%d=%%d", spres[pres], resolution);
+			sprintf(sstr[2], "screen_EndY_%s_%d=%%d", spres[pres], resolution);
+			sprintf(sstr[3], "screen_StartY_%s_%d=%%d", spres[pres], resolution);
+		}
 
 		buffer=NULL;
 		len = 0;
@@ -3704,17 +3715,11 @@ int main ( void )
 	my = viewy / 2; 
 	bw = MBOX_WIDTH_NORMAL / 2;
 	bh 	= MBOX_HEIGHT_NORMAL / 2;
-#if (HAVE_COOL_HARDWARE)
-	fb=open ( "/dev/fb/0", O_RDWR );
-#elif (HAVE_ARM_HARDWARE)
-        fb=open ( "/dev/fb", O_RDWR );
-#endif
+
+	fb=open ( "/dev/fb0", O_RDWR );
+
 	/* open Remote Control */
-#if (HAVE_COOL_HARDWARE)
-	rc = open ( "/dev/input/nevis_ir", O_RDONLY );
-#elif (HAVE_ARM_HARDWARE)
-        rc = open ( "/dev/input/event1", O_RDONLY );
-#endif
+	rc = open ( "/dev/input/event1", O_RDONLY );
 	if ( rc == -1 )
 	{
 		perror ( "TuxMail <open remote control>" );
