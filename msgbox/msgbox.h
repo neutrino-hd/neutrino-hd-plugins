@@ -150,7 +150,7 @@ extern uint32_t *lfb, *lbb, *obb, *hbb;
 struct fb_fix_screeninfo fix_screeninfo;
 struct fb_var_screeninfo var_screeninfo;
 extern uint32_t bgra[];
-extern int stride;
+extern int swidth;
 
 int startx, starty, sx, ex, sy, ey;
 //int debounce, rblock;
@@ -162,7 +162,7 @@ int get_instance(void);
 void put_instance(int pval);
 
 #ifndef FB_DEVICE
-#define FB_DEVICE	"/dev/fb0"
+#define FB_DEVICE	"/dev/fb/0"
 #endif
 
 #endif

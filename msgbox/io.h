@@ -1,7 +1,7 @@
 #ifndef __IO_H__
 #define __IO_H__
 
-#define RC_DEVICE	"/dev/input/event1"
+#define RC_DEVICE	"/dev/input/nevis_ir"
 
 int InitRC(void);
 int CloseRC(void);

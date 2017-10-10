@@ -5,7 +5,7 @@
 
 void read_neutrino_osd_conf ( int *ex,int *sx,int *ey, int *sy, int *preset)
 {
-	const char *filename="/etc/neutrino/config/neutrino.conf";
+	const char *filename="/var/tuxbox/config/neutrino.conf";
 	const char spres[][4]={"","crt","lcd"};
 	char sstr[4][32];
 	int pres=-1, resolution=-1, loop, *sptr[5]={ex, sx, ey, sy, preset};
@@ -3716,10 +3716,10 @@ int main ( void )
 	bw = MBOX_WIDTH_NORMAL / 2;
 	bh 	= MBOX_HEIGHT_NORMAL / 2;
 
-	fb=open ( "/dev/fb0", O_RDWR );
+	fb=open ( "/dev/fb/0", O_RDWR );
 
 	/* open Remote Control */
-	rc = open ( "/dev/input/event1", O_RDONLY );
+	rc = open ( "/dev/input/nevis_ir", O_RDONLY );
 	if ( rc == -1 )
 	{
 		perror ( "TuxMail <open remote control>" );

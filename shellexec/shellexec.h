@@ -162,7 +162,7 @@ enum {
 #define TRANSP 0
 
 extern uint32_t bgra[];
-extern int stride;
+extern int swidth;
 extern uint32_t *lfb, *lbb;
 
 extern int FSIZE_BIG;
@@ -186,7 +186,7 @@ int get_instance(void);
 void put_instance(int pval);
 
 #ifndef FB_DEVICE
-#define FB_DEVICE	"/dev/fb0"
+#define FB_DEVICE	"/dev/fb/0"
 #endif
 
 int key_count;

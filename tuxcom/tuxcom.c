@@ -451,7 +451,7 @@ void SetLanguage()
 
 void read_neutrino_osd_conf(int *ex,int *sx,int *ey, int *sy)
 {
-	const char *filename="/etc/neutrino/config/neutrino.conf";
+	const char *filename="/var/tuxbox/config/neutrino.conf";
 	const char spres[][4]={"","crt","lcd"};
 	char sstr[4][32];
 	int pres=-1, resolution=-1, loop, *sptr[4]={ex, sx, ey, sy};
@@ -515,10 +515,10 @@ int main()
 	kb = fb = rc = sx = ex = sy = ey = -1;
 
 	/* open Framebuffer */
-	fb=open("/dev/fb", O_RDWR);
+	fb=open("/dev/fb/0", O_RDWR);
 
 	/* open Remote Control */
-	rc = open("/dev/input/event1", O_RDONLY);
+	rc = open("/dev/input/nevis_ir", O_RDONLY);
 	if(rc == -1) {
 		perror("TuxCom <open remote control>");
 		exit(1);
@@ -787,7 +787,7 @@ int main()
 						if (expos && strlen(expos) > 0)
 						{
 							struct stat st;
-							sprintf(scriptfile,"%s%s%s","/etc/neutrino/config/", "/tuxcom/",expos+1);
+							sprintf(scriptfile,"%s%s%s","/var/tuxbox/config/", "/tuxcom/",expos+1);
 							if (lstat(scriptfile,&st) != -1)
 							{
 								char szCmd[4000];

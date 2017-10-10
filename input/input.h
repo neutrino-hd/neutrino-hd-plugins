@@ -135,7 +135,7 @@ enum {
 
 extern uint32_t *lfb, *lbb, *obb;
 extern uint32_t bgra[];
-extern int stride;
+extern int swidth;
 
 extern int FSIZE_BIG;
 extern int FSIZE_MED;
@@ -157,7 +157,7 @@ extern int buttons,selection;
 extern const char sc[8], tc[8];
 
 #ifndef FB_DEVICE
-#define FB_DEVICE	"/dev/fb0"
+#define FB_DEVICE	"/dev/fb/0"
 #endif
 
 #endif
