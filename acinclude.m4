@@ -701,4 +701,3 @@ AC_DEFUN([AC_PROG_EGREP],
  EGREP=$ac_cv_prog_egrep
  AC_SUBST([EGREP])
 ])
-
