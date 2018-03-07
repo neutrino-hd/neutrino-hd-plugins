@@ -59,10 +59,8 @@ Makefile
 include/Makefile
 msgbox/Makefile
 input/Makefile
-tuxmail/Makefile
 tuxcom/Makefile
 shellexec/Makefile
-cooliTSclimax/Makefile
 tuxwetter/Makefile
 tuxbox-plugins.pc
 ])
